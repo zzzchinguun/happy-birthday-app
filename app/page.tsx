@@ -286,24 +286,39 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
+              {/* Mongolian Birthday Message */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-2xl mx-auto"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-3xl mx-auto mb-8"
               >
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                   🎂 Happy Birthday Мишээх! 🎈
                 </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Мишээх, you have been alive for <span className="font-bold text-green-600">{livedTime.days.toLocaleString()}</span> days, 
-                  <span className="font-bold text-green-600"> {livedTime.hours}</span> hours, 
-                  <span className="font-bold text-green-600"> {livedTime.minutes}</span> minutes, and 
-                  <span className="font-bold text-green-600"> {livedTime.seconds}</span> seconds since September 1st, 2002 at 4 AM! 
-                  May your special day be filled with love, laughter, and all the things that make you smile. 
-                  Here's to another amazing year ahead filled with new opportunities, wonderful memories, 
-                  and countless reasons to celebrate! You deserve all the happiness in the world! 🌟
-                </p>
+                <div className="text-gray-600 leading-relaxed space-y-4">
+                  <p className="text-lg">
+                    Мишээх, you have been alive for <span className="font-bold text-green-600">{livedTime.days.toLocaleString()}</span> days, 
+                    <span className="font-bold text-green-600"> {livedTime.hours}</span> hours, 
+                    <span className="font-bold text-green-600"> {livedTime.minutes}</span> minutes, and 
+                    <span className="font-bold text-green-600"> {livedTime.seconds}</span> seconds since September 1st, 2002 at 4 AM!
+                  </p>
+                  
+                  <div className="border-t pt-4">
+                    <h3 className="text-xl font-semibold text-purple-600 mb-3">Төрсөн өдрийн мэнд хүргэе 🤍</h3>
+                    <p className="text-gray-700 leading-relaxed text-lg">
+                      Чамайг энэ хорвоод мэндэлж, надад үнэнч, хайртай, хөгжилтэй найз болж өгсөнд баярладаг шүү. 
+                      Чиний мөрөөдөл өнөөдөр бүгд биелж, аз жаргал, инээд хөөрөөр дүүрэн байгаарай, 
+                      өнөөдөр чиний өдөр шүү алаад хая2.
+                    </p>
+                  </div>
+                  
+                  <p className="text-gray-600">
+                    May your special day be filled with love, laughter, and all the things that make you smile. 
+                    Here's to another amazing year ahead filled with new opportunities, wonderful memories, 
+                    and countless reasons to celebrate! You deserve all the happiness in the world! 🌟
+                  </p>
+                </div>
               </motion.div>
 
               <div className="absolute inset-0 pointer-events-none">
