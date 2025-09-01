@@ -12,9 +12,14 @@ export default function Home() {
     minutes: 0,
     seconds: 0
   })
-  const [livedDays, setLivedDays] = useState(0)
+  const [livedTime, setLivedTime] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  })
 
-  // Calculate birthday countdown and lived days
+  // Calculate birthday countdown and lived time
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date()
@@ -40,22 +45,32 @@ export default function Home() {
       }
     }
 
-    const calculateLivedDays = () => {
+    const calculateLivedTime = () => {
       const now = new Date()
       const birthDate = new Date(2002, 8, 1, 4, 0, 0) // September 1st, 2002 at 4 AM
       
       const timeDifference = now.getTime() - birthDate.getTime()
-      const daysLived = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+      const totalSeconds = Math.floor(timeDifference / 1000)
       
-      setLivedDays(daysLived)
+      const days = Math.floor(totalSeconds / (24 * 60 * 60))
+      const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60))
+      const minutes = Math.floor((totalSeconds % (60 * 60)) / 60)
+      const seconds = totalSeconds % 60
+      
+      setLivedTime({
+        days,
+        hours,
+        minutes,
+        seconds
+      })
     }
 
     calculateTimeLeft()
-    calculateLivedDays()
+    calculateLivedTime()
     
     const timer = setInterval(() => {
       calculateTimeLeft()
-      calculateLivedDays()
+      calculateLivedTime()
     }, 1000)
 
     return () => clearInterval(timer)
@@ -147,20 +162,37 @@ export default function Home() {
                 September 1st is your special day! 🎂
               </motion.p>
 
-              {/* Lived Days Counter */}
+              {/* Lived Time Counter */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.65, duration: 0.8 }}
-                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-6 max-w-md mx-auto"
+                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-6 max-w-2xl mx-auto"
               >
                 <div className="flex items-center justify-center mb-4">
                   <Calendar className="w-8 h-8 text-green-500 mr-2" />
-                  <h3 className="text-2xl font-bold text-gray-800">Total Days Lived</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Total Time Lived</h3>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-green-600 mb-2">{livedDays.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600">Days since September 1st, 2002 at 4 AM</div>
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">{livedTime.days.toLocaleString()}</div>
+                    <div className="text-sm text-gray-600">Days</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">{livedTime.hours}</div>
+                    <div className="text-sm text-gray-600">Hours</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">{livedTime.minutes}</div>
+                    <div className="text-sm text-gray-600">Minutes</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">{livedTime.seconds}</div>
+                    <div className="text-sm text-gray-600">Seconds</div>
+                  </div>
+                </div>
+                <div className="text-center mt-3">
+                  <div className="text-sm text-gray-600">Since September 1st, 2002 at 4 AM</div>
                 </div>
               </motion.div>
 
@@ -233,7 +265,10 @@ export default function Home() {
                   🎂 Happy Birthday Мишээх! 🎈
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Мишээх, you have been alive for <span className="font-bold text-green-600">{livedDays.toLocaleString()}</span> amazing days since September 1st, 2002 at 4 AM! 
+                  Мишээх, you have been alive for <span className="font-bold text-green-600">{livedTime.days.toLocaleString()}</span> days, 
+                  <span className="font-bold text-green-600"> {livedTime.hours}</span> hours, 
+                  <span className="font-bold text-green-600"> {livedTime.minutes}</span> minutes, and 
+                  <span className="font-bold text-green-600"> {livedTime.seconds}</span> seconds since September 1st, 2002 at 4 AM! 
                   May your special day be filled with love, laughter, and all the things that make you smile. 
                   Here's to another amazing year ahead filled with new opportunities, wonderful memories, 
                   and countless reasons to celebrate! You deserve all the happiness in the world! 🌟
