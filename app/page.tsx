@@ -2,11 +2,48 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, Star, Gift, Cake, Sparkles } from 'lucide-react'
+import { Heart, Star, Gift, Cake, Sparkles, Clock } from 'lucide-react'
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false)
   const [confetti, setConfetti] = useState<Array<{id: number, x: number, color: string}>>([])
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  })
+
+  // Calculate birthday countdown
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date()
+      const currentYear = now.getFullYear()
+      
+      // Set birthday to September 1st of current year at 4 hours from now
+      const birthday = new Date(currentYear, 8, 1) // Month is 0-indexed, so 8 = September
+      birthday.setHours(now.getHours() + 4, now.getMinutes(), now.getSeconds())
+      
+      // If birthday has passed this year, set it to next year
+      if (birthday < now) {
+        birthday.setFullYear(currentYear + 1)
+      }
+      
+      const difference = birthday.getTime() - now.getTime()
+      
+      if (difference > 0) {
+        setTimeLeft({
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        })
+      }
+    }
+
+    calculateTimeLeft()
+    const timer = setInterval(calculateTimeLeft, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 500)
@@ -76,14 +113,50 @@ export default function Home() {
                 Happy Birthday!
               </motion.h1>
 
+              <motion.h2
+                initial={{ y: -30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                className="text-4xl md:text-6xl font-bold text-purple-600 mb-4"
+              >
+                Мишээх! 🎉
+              </motion.h2>
+
               <motion.p
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
                 className="text-xl md:text-2xl text-gray-700 mb-8"
               >
-                Wishing you a day filled with joy, laughter, and wonderful surprises! 🎉
+                September 1st is your special day! 🎂
               </motion.p>
+
+              {/* Countdown Timer */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7, duration: 0.8 }}
+                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-8 max-w-md mx-auto"
+              >
+                <div className="flex items-center justify-center mb-4">
+                  <Clock className="w-8 h-8 text-purple-500 mr-2" />
+                  <h3 className="text-2xl font-bold text-gray-800">Countdown to Birthday!</h3>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-purple-600">{timeLeft.hours}</div>
+                    <div className="text-sm text-gray-600">Hours</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-purple-600">{timeLeft.minutes}</div>
+                    <div className="text-sm text-gray-600">Minutes</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-purple-600">{timeLeft.seconds}</div>
+                    <div className="text-sm text-gray-600">Seconds</div>
+                  </div>
+                </div>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
@@ -124,12 +197,12 @@ export default function Home() {
                 className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-2xl mx-auto"
               >
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  🎂 Another Year, Another Adventure! 🎈
+                  🎂 Happy Birthday Мишээх! 🎈
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  May your special day be filled with love, laughter, and all the things that make you smile. 
+                  Мишээх, may your special day on September 1st be filled with love, laughter, and all the things that make you smile. 
                   Here's to another amazing year ahead filled with new opportunities, wonderful memories, 
-                  and countless reasons to celebrate!
+                  and countless reasons to celebrate! You deserve all the happiness in the world! 🌟
                 </p>
               </motion.div>
 
