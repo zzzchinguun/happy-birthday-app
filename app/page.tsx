@@ -8,6 +8,7 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false)
   const [confetti, setConfetti] = useState<Array<{id: number, x: number, color: string}>>([])
   const [timeLeft, setTimeLeft] = useState({
+    days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
@@ -25,9 +26,8 @@ export default function Home() {
       const now = new Date()
       const currentYear = now.getFullYear()
       
-      // Set birthday to September 1st of current year at 4 hours from now
-      const birthday = new Date(currentYear, 8, 1) // Month is 0-indexed, so 8 = September
-      birthday.setHours(now.getHours() + 4, now.getMinutes(), now.getSeconds())
+      // Set birthday to September 1st of current year at 4 AM
+      const birthday = new Date(currentYear, 8, 1, 4, 0, 0) // Month is 0-indexed, so 8 = September, 4 AM
       
       // If birthday has passed this year, set it to next year
       if (birthday < now) {
@@ -37,10 +37,25 @@ export default function Home() {
       const difference = birthday.getTime() - now.getTime()
       
       if (difference > 0) {
+        const totalSeconds = Math.floor(difference / 1000)
+        const days = Math.floor(totalSeconds / (24 * 60 * 60))
+        const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60))
+        const minutes = Math.floor((totalSeconds % (60 * 60)) / 60)
+        const seconds = totalSeconds % 60
+        
         setTimeLeft({
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60)
+          days,
+          hours,
+          minutes,
+          seconds
+        })
+      } else {
+        // If it's the birthday, show zeros
+        setTimeLeft({
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0
         })
       }
     }
@@ -101,6 +116,9 @@ export default function Home() {
     }, 1000)
     return () => clearInterval(cleanup)
   }, [])
+
+  // Check if it's the birthday
+  const isBirthday = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 overflow-hidden relative">
@@ -201,26 +219,39 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
-                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-8 max-w-md mx-auto"
+                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-8 max-w-2xl mx-auto"
               >
                 <div className="flex items-center justify-center mb-4">
                   <Clock className="w-8 h-8 text-purple-500 mr-2" />
-                  <h3 className="text-2xl font-bold text-gray-800">Countdown to Birthday!</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">
+                    {isBirthday ? "🎉 It's Your Birthday Today! 🎉" : "Countdown to Birthday!"}
+                  </h3>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                {isBirthday ? (
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">{timeLeft.hours}</div>
-                    <div className="text-sm text-gray-600">Hours</div>
+                    <div className="text-4xl font-bold text-purple-600 mb-2">🎂 HAPPY BIRTHDAY! 🎂</div>
+                    <div className="text-lg text-gray-600">Enjoy your special day!</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">{timeLeft.minutes}</div>
-                    <div className="text-sm text-gray-600">Minutes</div>
+                ) : (
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">{timeLeft.days}</div>
+                      <div className="text-sm text-gray-600">Days</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">{timeLeft.hours}</div>
+                      <div className="text-sm text-gray-600">Hours</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">{timeLeft.minutes}</div>
+                      <div className="text-sm text-gray-600">Minutes</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600">{timeLeft.seconds}</div>
+                      <div className="text-sm text-gray-600">Seconds</div>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">{timeLeft.seconds}</div>
-                    <div className="text-sm text-gray-600">Seconds</div>
-                  </div>
-                </div>
+                )}
               </motion.div>
 
               <motion.div
