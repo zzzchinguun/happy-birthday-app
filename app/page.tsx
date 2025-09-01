@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, Star, Gift, Cake, Sparkles, Clock } from 'lucide-react'
+import { Heart, Star, Gift, Cake, Sparkles, Clock, Calendar } from 'lucide-react'
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false)
@@ -12,8 +12,9 @@ export default function Home() {
     minutes: 0,
     seconds: 0
   })
+  const [livedDays, setLivedDays] = useState(0)
 
-  // Calculate birthday countdown
+  // Calculate birthday countdown and lived days
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date()
@@ -39,8 +40,23 @@ export default function Home() {
       }
     }
 
+    const calculateLivedDays = () => {
+      const now = new Date()
+      const birthDate = new Date(2002, 8, 1, 4, 0, 0) // September 1st, 2002 at 4 AM
+      
+      const timeDifference = now.getTime() - birthDate.getTime()
+      const daysLived = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+      
+      setLivedDays(daysLived)
+    }
+
     calculateTimeLeft()
-    const timer = setInterval(calculateTimeLeft, 1000)
+    calculateLivedDays()
+    
+    const timer = setInterval(() => {
+      calculateTimeLeft()
+      calculateLivedDays()
+    }, 1000)
 
     return () => clearInterval(timer)
   }, [])
@@ -131,6 +147,23 @@ export default function Home() {
                 September 1st is your special day! 🎂
               </motion.p>
 
+              {/* Lived Days Counter */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.65, duration: 0.8 }}
+                className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl mb-6 max-w-md mx-auto"
+              >
+                <div className="flex items-center justify-center mb-4">
+                  <Calendar className="w-8 h-8 text-green-500 mr-2" />
+                  <h3 className="text-2xl font-bold text-gray-800">Total Days Lived</h3>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-green-600 mb-2">{livedDays.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Days since September 1st, 2002 at 4 AM</div>
+                </div>
+              </motion.div>
+
               {/* Countdown Timer */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -200,7 +233,8 @@ export default function Home() {
                   🎂 Happy Birthday Мишээх! 🎈
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Мишээх, may your special day on September 1st be filled with love, laughter, and all the things that make you smile. 
+                  Мишээх, you have been alive for <span className="font-bold text-green-600">{livedDays.toLocaleString()}</span> amazing days since September 1st, 2002 at 4 AM! 
+                  May your special day be filled with love, laughter, and all the things that make you smile. 
                   Here's to another amazing year ahead filled with new opportunities, wonderful memories, 
                   and countless reasons to celebrate! You deserve all the happiness in the world! 🌟
                 </p>
